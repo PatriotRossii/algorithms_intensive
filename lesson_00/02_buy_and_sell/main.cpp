@@ -1,9 +1,10 @@
 #include <iostream>
 #include <vector>
+#include <utility>
 
 int main() {
 	// Бюджет денежных единиц
-	constexpr int budget = 1000;
+	constexpr double budget = 1024;
 	// Количество дней
 	int n; std::cin >> n;
 
@@ -13,27 +14,29 @@ int main() {
 		std::cin >> x;
 	}
 
-	int buy_date{-1};
-	int sell_date{-1};
-	int maximum_difference{-1};
+	// Индекс дня, когда выгодней всего купить газ
+	int min_index = 0;
+	// Максимальное количество газа, которое мы можем купить
+	double max_gas = budget / prices[0];
+	// Максимальная прибыль
+	double max_revenue = 0;
 
-	for (auto iIt = prices.begin(), begin = prices.begin(), end = prices.end(); iIt != end; ++iIt) {
-		int iElement = *iIt;
-		if (iElement > budget) continue;
-		for (auto jIt = iIt + 1; jIt != end; ++jIt) {
-			int jElement = *jIt;
-			int difference = jElement - iElement;
-			if (difference > maximum_difference) {
-				maximum_difference = difference;
-				buy_date = iIt - begin;
-				sell_date = jIt - begin;
-			}
+	// Ответ
+	std::pair<int, int> answer{0, 0};
+
+	for (int i = 1; i != n; ++i) {
+		// Наша выручка — наш газ, помноженный на цену продажи, минус деньги, которые мы вложили в покупку
+		int revenue = max_gas * prices[i] - budget;
+		if (revenue > max_revenue) {
+			max_revenue = revenue;
+			answer = {min_index + 1, i + 1};
+		}
+		// Может оказаться, что сегодня мы можем купить больше газа, чем у нас было — это выгодно
+		if (budget / prices[i] > max_gas) {
+			min_index = i;
+			max_gas = budget / prices[i];
 		}
 	}
 
-	if (buy_date < sell_date) {
-		std::cout << buy_date + 1 << ' ' << sell_date + 1 << '\n';
-	} else {
-		std::cout << 0 << ' ' << 0 << '\n';
-	}
+	std::cout << answer.first << ' ' << answer.second << '\n';
 }
