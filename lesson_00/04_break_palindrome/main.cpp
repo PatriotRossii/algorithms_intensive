@@ -2,38 +2,22 @@
 #include <iostream>
 #include <string>
 
-bool can_replace(std::string_view palindrome) {
-	if (palindrome.size() == 1)
-		return false;
-	for (const char& x: palindrome)
-		if (x != 'a')
-			return true;
-	return false;
-}
-
-bool is_palidrome(std::string_view s)
-{
-    return std::equal(begin(s), begin(s) + size(s) / 2, rbegin(s));
-}
-
 int main() {
 	std::string palindrome; std::cin >> palindrome;
-	if (!can_replace(palindrome)) {
+
+	if (palindrome.size() == 1) {
 		std::cout << '\n';
 		return 0;
 	}
-
-	while (is_palidrome(palindrome)) {
-		for (auto& x: palindrome)
-			if (x != 'a') {
-				x = static_cast<char>(
-					static_cast<int>(x) - 1
-				);
-				break;
-			}
-		if (is_palidrome(palindrome))
-			break
+	for (auto i = static_cast<size_t>(0), size = palindrome.size() / 2; i != size; ++i) {
+		auto& x = palindrome[i];
+		if (x != 'a') {
+			x = 'a';
+			goto finish;
+		}
 	}
+	palindrome[palindrome.size() - 1] = 'b';
 
+finish:
 	std::cout << palindrome << '\n';
 }
