@@ -6,11 +6,11 @@ struct Time {
 	int hours;
 	int minutes;
 
-	int to_seconds() const {
-		return hours * 3600 + minutes * 60;
+	int to_minutes() const {
+		return 60 * hours + minutes;
 	}
 	int operator-(const Time& rhs) const {
-		return to_seconds() - rhs.to_seconds();
+		return to_minutes() - rhs.to_minutes();
 	}
 	auto operator<=>(const Time&) const = default;
 };
@@ -38,16 +38,9 @@ int main() {
 	}
 	std::sort(time_points.begin(), time_points.end());
 
-	int minDelta{24 * 3600};
-
-	auto previousIt = time_points.begin();
-	auto it = time_points.begin();
-	++it;
-
-	for (auto end = time_points.end(); it != end; ++previousIt, ++it) {
-		minDelta = std::min(*it - *previousIt, minDelta);
+	int minDelta = 24 * 60 - (time_points.back() - time_points.front());
+	for (int i = 1, size = time_points.size(); i != size; ++i) {
+		minDelta = std::min(time_points[i] - time_points[i - 1], minDelta);
 	}
-	minDelta = std::min(86400 - (time_points.back() - time_points.front()), minDelta);
-
-	std::cout << minDelta / 60 << '\n';
+	std::cout << minDelta << '\n';
 }
