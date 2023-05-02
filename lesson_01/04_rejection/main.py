@@ -1,19 +1,23 @@
 import sys
 
 def remove_vowels(string):
-	return string.replace("e", "a").replace("i", "a").replace("o", "a").replace("u", "a")
+	return string.replace("a", "#").replace("e", "#").replace("i", "#").replace("o", "#").replace("u", "#")
 
 n = int(sys.stdin.readline().strip())
-first_class = sys.stdin.readline().strip().split()
-second_class = {
-	element.lower(): element
-	for element in reversed(first_class)
-}
-third_class = {
-	remove_vowels(key): value
-	for key, value in second_class.items()
-}
-first_class = set(first_class)
+words = sys.stdin.readline().strip().split()
+
+first_class = set()
+second_class = {}
+third_class = {}
+
+for word in words:
+	first_class.add(word)
+	word_lower = word.lower()
+	if word_lower not in second_class:
+		second_class[word_lower] = word
+	word_unvowel = remove_vowels(word_lower)
+	if word_unvowel not in third_class:
+		third_class[word_unvowel] = word
 
 k = int(sys.stdin.readline().strip())
 elements = sys.stdin.readline().strip().split()
